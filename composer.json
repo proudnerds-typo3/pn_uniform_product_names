@@ -9,6 +9,7 @@
         "government",
         "productnames"
     ],
+    "license": ["GPL-2.0-or-later"],
     "authors": [
         {
             "name": "Jacco van der Post",
