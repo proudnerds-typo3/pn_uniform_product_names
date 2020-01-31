@@ -1,0 +1,60 @@
+plugin.tx_pnuniformproductnames {
+    settings {
+        sourceXmlUrl = https://standaarden.overheid.nl/owms/oquery/UPL-gemeente.xml
+
+        dcterms {
+            type = <dcterms:type scheme="overheid:Informatietype">productbeschrijving</dcterms:type>
+            spatial = <dcterms:spatial scheme="overheid:Gemeente" resourceIdentifier="http://standaarden.overheid.nl/owms/terms/Tilburg_(gemeente)">Tilburg</dcterms:spatial>
+            authority = <overheid:authority scheme="overheid:Gemeente" resourceIdentifier="http://standaarden.overheid.nl/owms/terms/Tilburg_(gemeente)">Tilburg</overheid:authority>
+
+            default {
+                language = nl
+                onlineAanvragen = nee
+            }
+        }
+    }
+}
+
+productcatalogi = PAGE
+productcatalogi {
+    typeNum = 888
+
+    config {
+        disableAllHeaderCode = 1
+        xhtml_cleaning = output
+        admPanel = 0
+        debug = 0
+        metaCharset = utf-8
+        additionalHeaders.10.header = Content-Type:application/xml;charset=utf-8
+        disablePrefixComment = 1
+        linkVars >
+    }
+
+    10 = USER_INT
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        extensionName = PnUniformProductNames
+        pluginName = PnForPages
+        vendorName = Proudnerds
+        switchableControllerActions {
+            Uniformeproductnamen {
+                1 = show
+            }
+        }
+        ## Replace invalid xhtml
+        stdWrap.replacement {
+            10  {
+                search = &nbsp;
+                replace = &#160;
+            }
+        }
+    }
+}
+
+config.tx_extbase.persistence.classes {
+    Proudnerds\PnUniformProductNames\Domain\Model\Pages {
+        mapping {
+            tableName = pages
+        }
+    }
+}

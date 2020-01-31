@@ -1,0 +1,30 @@
+{
+    "name": "proudnerds-typo3/pn-uniform-product-names",
+    "type": "typo3-cms-extension",
+    "description": "Import and select in page properties the uniform names of products and services of The Dutch government.",
+    "keywords": [
+        "TYPO3",
+        "extension",
+        "Dutch",
+        "government",
+        "productnames"
+    ],
+    "authors": [
+        {
+            "name": "Jacco van der Post",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Proudnerds\\PnUniformProductNames\\": "Classes"
+        }
+    },
+    "replace": {
+        "Proudnerds/pn-uniform-product-names": "self.version",
+        "typo3-ter/pn-uniform-product-names": "self.version"
+    }
+}

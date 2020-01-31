@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" target-language="nl" datatype="plaintext"
+          original="EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db" date="2020-01-13T10:54:18Z"
+          product-name="pn_uniform_product_names">
+        <header/>
+        <body>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience">
+                <target>Publiek</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_online_aanvragen"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_online_aanvragen">
+                <target>Online Aanvragen</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_aanvraag_url"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_aanvraag_url">
+                <target>Aanvraag Url</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_abstract"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_abstract">
+                <target>Abstract (dit is de toelichting of samenvatting van 300 tekens)</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_product_html"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_product_html">
+                <target>ProductHTML (beschrijvende tekst, meer dan het veld ‘abstract’ alvorens de
+                    gebruiker door te laten klikken naar de betreffende productpagina)
+                </target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_language"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_language">
+                <target>Taal</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_uniforme_productnaam"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_uniforme_productnaam">
+                <target>Uniforme productnamen</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_gerelateerd_product"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_gerelateerd_product">
+                <target>Gerelateerde producten</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_uniformeproductnamen"
+                        resname="tx_pnuniformproductnames_domain_model_uniformeproductnamen">
+                <target>Uniforme productnamen</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_uniformeproductnamen.title"
+                        resname="tx_pnuniformproductnames_domain_model_uniformeproductnamen.title">
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_uniformeproductnamen.uri"
+                        resname="tx_pnuniformproductnames_domain_model_uniformeproductnamen.uri">
+                <target>Resource identifier</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.nl">
+                <target>Nederlands</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.en">
+                <target>Engels</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.de">
+                <target>Duits</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.fr">
+                <target>Frans</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.es">
+                <target>Spaans</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.tr">
+                <target>Turks</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.it">
+                <target>Italiaans</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.pl">
+                <target>Pools</target>
+            </trans-unit>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.taal.ro">
+                <target>Roemeens</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,111 @@
+<html
+        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+        xmlns:pn="http://typo3.org/ns/Proudnerds/PnUniformProductNames/ViewHelpers"
+        xmlns:overheidproduct="http://standaarden.overheid.nl/product/terms/"
+        xmlns:overheid="http://standaarden.overheid.nl/owms/terms/"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        data-namespace-typo3-fluid="true">
+
+<f:layout name="Producten" />
+<f:section name="content">
+<overheidproduct:scproducten
+        xmlns:overheidproduct="http://standaarden.overheid.nl/product/terms/"
+        xmlns:overheid="http://standaarden.overheid.nl/owms/terms/"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://standaarden.overheid.nl/product/terms/ https://standaarden.overheid.nl/sc/4.0/xsd/sc.xsd">
+    <f:for each="{pages}" as="page">
+        <overheidproduct:scproduct owms-version="4.0">
+            <overheidproduct:meta>
+                <overheidproduct:owmskern>
+                    <dcterms:identifier><f:uri.page pageUid="{page.uid}" absolute="1"/></dcterms:identifier>
+                    <dcterms:title><f:format.cdata>{page.title}</f:format.cdata></dcterms:title>
+                    <f:if condition="{page.uniform_product_names_language}">
+                        <f:then>
+                            <dcterms:language>{page.uniform_product_names_language}</dcterms:language>
+                        </f:then>
+                        <f:else>
+                            <dcterms:language>{settings.dcterms.default.language}</dcterms:language>
+                        </f:else>
+                    </f:if>
+                    <f:format.raw>{settings.dcterms.type}</f:format.raw>
+                    <f:if condition="{page.SYS_LASTCHANGED} > 0">
+                        <f:then>
+                            <dcterms:modified><f:format.date format="Y-m-d">{page.SYS_LASTCHANGED}</f:format.date></dcterms:modified>
+                        </f:then>
+                        <f:else>
+                            <dcterms:modified><f:format.date format="Y-m-d">{page.tstamp}</f:format.date></dcterms:modified>
+                        </f:else>
+                    </f:if>
+                    <f:format.raw>{settings.dcterms.spatial}</f:format.raw>
+                    <f:format.raw>{settings.dcterms.authority}</f:format.raw>
+                </overheidproduct:owmskern>
+                <overheidproduct:owmsmantel>
+                    <f:switch expression="{page.audience}">
+                        <f:case value="beide">
+                            <dcterms:audience scheme="overheid:Doelgroep">particulier</dcterms:audience>
+                            <dcterms:audience scheme="overheid:Doelgroep">ondernemer</dcterms:audience>
+                        </f:case>
+                        <f:case value="ondernemer">
+                            <dcterms:audience scheme="overheid:Doelgroep">ondernemer</dcterms:audience>
+                        </f:case>
+                        <f:defaultCase>
+                            <dcterms:audience scheme="overheid:Doelgroep">particulier</dcterms:audience>
+                        </f:defaultCase>
+                    </f:switch>
+                    <f:if condition="{page.keywords}">
+                        <dcterms:subject><f:format.cdata>{page.keywords}</f:format.cdata></dcterms:subject>
+                    </f:if>
+                    <f:if condition="{page.uniform_product_names_abstract}">
+                        <f:then>
+                            <dcterms:abstract><f:format.cdata>{page.uniform_product_names_abstract}</f:format.cdata></dcterms:abstract>
+                        </f:then>
+                        <f:else if="{page.abstract}">
+                            <dcterms:abstract><f:format.cdata>{page.abstract}</f:format.cdata></dcterms:abstract>
+                        </f:else>
+                        <f:else if="{page.description}">
+                            <dcterms:abstract><f:format.cdata>{page.description}</f:format.cdata></dcterms:abstract>
+                        </f:else>
+                        <f:else>
+                            <dcterms:abstract><f:format.cdata>{page.title}</f:format.cdata></dcterms:abstract>
+                        </f:else>
+                    </f:if>
+                </overheidproduct:owmsmantel>
+                <overheidproduct:scmeta>
+                    <overheidproduct:productID>{page.uid}</overheidproduct:productID>
+                    <f:if condition="{page.uniform_product_names_online_aanvragen}">
+                        <f:then>
+                            <overheidproduct:onlineAanvragen>{page.uniform_product_names_online_aanvragen}</overheidproduct:onlineAanvragen>
+                        </f:then>
+                        <f:else>
+                            <overheidproduct:onlineAanvragen>{settings.dcterms.default.onlineAanvragen}</overheidproduct:onlineAanvragen>
+                        </f:else>
+                    </f:if>
+                    <f:if condition="{page.uniform_product_names_aanvraag_url}">
+                        <overheidproduct:aanvraagURL resourceIdentifier="{page.uniform_product_names_aanvraag_url}"/>
+                    </f:if>
+                    <f:if condition="{page.uniform_product_names_uniforme_productnaam}">
+                        <f:for each="{pn:getProductNames(uids:page.uniform_product_names_uniforme_productnaam)}" as="productName">
+                            <overheidproduct:uniformeProductnaam scheme="overheid:UniformeProductnaam" resourceIdentifier="{productName.uri}">{productName.title}</overheidproduct:uniformeProductnaam>
+                        </f:for>
+                    </f:if>
+                    <f:if condition="{page.uniform_product_names_gerelateerd_product}">
+                        <f:for each="{pn:getProductNames(uids:page.uniform_product_names_gerelateerd_product)}" as="productName">
+                            <overheidproduct:gerelateerdProduct scheme="overheid:UniformeProductnaam" resourceIdentifier="{productName.uri}">{productName.title}</overheidproduct:gerelateerdProduct>
+                        </f:for>
+                    </f:if>
+                </overheidproduct:scmeta>
+            </overheidproduct:meta>
+            <overheidproduct:body>
+                <f:if condition="{page.uniform_product_names_product_html}">
+                    <overheidproduct:productHTML xmlns="http://www.w3.org/1999/xhtml"
+                                                 xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd">
+                        <f:format.cdata>{page.uniform_product_names_product_html}</f:format.cdata>
+                    </overheidproduct:productHTML>
+                </f:if>
+            </overheidproduct:body>
+        </overheidproduct:scproduct>
+    </f:for>
+</overheidproduct:scproducten>
+</f:section>
+</html>

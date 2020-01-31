@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:pn_uniform_product_names/Resources/Private/Language/locallang" date="2020-01-13T10:54:18Z" product-name="pn_uniform_product_names">
+		<header/>
+		<body>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_pages" resname="tx_pnuniformproductnames_domain_model_pages">
+				<source>Pages</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience" resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience">
+				<source>Publiek</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_online_aanvragen" resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_online_aanvragen">
+				<source>Online Aanvragen</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_aanvraag_url" resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_aanvraag_url">
+				<source>Aanvraag Url</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_uniforme_productnaam" resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_uniforme_productnaam">
+				<source>Uniforme Productnaam</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_gerelateerd_product" resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_gerelateerd_product">
+				<source>Gerelateerd Product</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_uniformeproductnamen" resname="tx_pnuniformproductnames_domain_model_uniformeproductnamen">
+				<source>Uniforme productnamen</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_uniformeproductnamen.title" resname="tx_pnuniformproductnames_domain_model_uniformeproductnamen.title">
+				<source>Titel</source>
+			</trans-unit>
+			<trans-unit id="tx_pnuniformproductnames_domain_model_uniformeproductnamen.uri" resname="tx_pnuniformproductnames_domain_model_uniformeproductnamen.uri">
+				<source>Resource identifier</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

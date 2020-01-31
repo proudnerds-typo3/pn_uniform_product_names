@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:pn_uniform_product_names/Resources/Private/Language/locallang_csh" date="2020-01-13T10:54:18Z" product-name="pn_uniform_product_names">
+		<header/>
+		<body>
+			<trans-unit id="uniform_product_names_audience.description" resname="uniform_product_names_audience.description">
+				<source>uniformProductNamesAudience</source>
+			</trans-unit>
+			<trans-unit id="uniform_product_names_online_aanvragen.description" resname="uniform_product_names_online_aanvragen.description">
+				<source>uniformProductNamesOnlineAanvragen</source>
+			</trans-unit>
+			<trans-unit id="uniform_product_names_aanvraag_url.description" resname="uniform_product_names_aanvraag_url.description">
+				<source>uniformProductNamesAanvraagUrl</source>
+			</trans-unit>
+			<trans-unit id="uniform_product_names_uniforme_productnaam.description" resname="uniform_product_names_uniforme_productnaam.description">
+				<source>uniformProductNamesUniformeProductnaam</source>
+			</trans-unit>
+			<trans-unit id="uniform_product_names_gerelateerd_product.description" resname="uniform_product_names_gerelateerd_product.description">
+				<source>uniformProductNamesGerelateerdProduct</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
