@@ -87,11 +87,7 @@ Import and select in page properties the uniform names of products and services 
    :hidden:
 
    Introduction/Index
-   User/Index
    Installation/Index
-   Configuration/Index
-   Developer/Index
    KnownProblems/Index
-   ToDoList/Index
    ChangeLog/Index
    Sitemap
