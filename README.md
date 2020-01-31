@@ -1,5 +1,5 @@
 # pn_uniform_product_names
-This extension is aimed at Dutch governement organizations. It implements extra page properties to set Uniform Product Names and produces a XML feed for the Samenwerkende Catalogi (SC).
+This TYPO3 extension is aimed at Dutch governement organizations. It implements extra page properties to set Uniform Product Names and produces a XML feed for the Samenwerkende Catalogi (SC).
 
 The SC is a set of agreements how to exchange products and services of the Dutch governement online. The SC provides a nation wide virtual product catalog, which assists citizens and organizations to find more easily products and services offered by governement organizations.
 
