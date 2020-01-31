@@ -12,4 +12,4 @@ ChangeLog
 =========
 
 * 1.0.0 Initial release
-* 1.0.1 - 1.0.4 small cleanups
+* 1.0.1 - 1.0.5 small cleanups
