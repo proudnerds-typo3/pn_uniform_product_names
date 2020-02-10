@@ -113,12 +113,18 @@ class ImportCommand extends Command implements LoggerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $projectRootPath = GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
+        $folderName = '/public/typo3temp/pn_uniform_product_names/';
+        $folderDirectory = $projectRootPath . $folderName;
+        if (!@is_dir($folderDirectory)) {
+            GeneralUtility::mkdir_deep($folderDirectory);
+        }
         $io = new SymfonyStyle($input, $output);
         $settings = Typo3Utility::getSettings();
         $url = $settings['sourceXmlUrl'];
-        $projectRootPath = GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
+
         $date = new \DateTime();
-        $productNamesTempImportFilePath = $projectRootPath . '/public/typo3temp/pn_uniform_product_names/UPL_import_' . $date->format('H-i-s_d-m-Y') . '.xml';
+        $productNamesTempImportFilePath = $folderDirectory . 'UPL_import_' . $date->format('H-i-s_d-m-Y') . '.xml';
 
         $additionalOptions = [
             'headers' => ['Cache-Control' => 'no-cache'],
@@ -143,7 +149,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
             $logMessage = $response;
             $io->text(['', $logMessage]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
-            Typo3Utility::flashmessage($logMessage,'',FlashMessage::ERROR);
+            Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
             return;
         }
 
@@ -173,7 +179,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 $logMessage = 'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath;
                 $io->text(['', $logMessage]);
                 $this->logger->log(LogLevel::CRITICAL, $logMessage);
-                Typo3Utility::flashmessage($logMessage,'',FlashMessage::ERROR);
+                Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
                 return;
             }
         } catch (
@@ -186,7 +192,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath . ': ' . $logMessage
             ]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
-            Typo3Utility::flashmessage($logMessage,'',FlashMessage::ERROR);
+            Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
             return;
         }
 

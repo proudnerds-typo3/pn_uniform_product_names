@@ -112,10 +112,14 @@ class MigrateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $settings = Typo3Utility::getSettings();
         $projectRootPath = GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
+        $folderName = '/public/typo3temp/pn_uniform_product_names/';
+        $folderDirectory = $projectRootPath . $folderName;
+        if (!@is_dir($folderDirectory)) {
+            GeneralUtility::mkdir_deep($folderDirectory);
+        }
         $date = new \DateTime();
-        $migrateMissingCsvFile = fopen($projectRootPath . '/public/typo3temp/pn_uniform_product_names/UPL_migrate_' . $date->format('H-i-s_d-m-Y') . '.csv',
+        $migrateMissingCsvFile = fopen($folderDirectory . 'UPL_migrate_' . $date->format('H-i-s_d-m-Y') . '.csv',
             'w');
 
         $logMessage = 'Migrating start..';
