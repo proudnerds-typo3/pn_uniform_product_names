@@ -13,3 +13,5 @@ ChangeLog
 
 * 1.0.0 Initial release
 * 1.0.1 - 1.0.5 small cleanups
+* 1.0.6 Maintenance release. Making sure directory for temporary data handling is created.
+* 1.0.7 Small change to allow rendering of the documentation
