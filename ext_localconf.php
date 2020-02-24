@@ -19,7 +19,7 @@ call_user_func(function () {
     $projectRootPath = TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
     $productNamesImportLogFilePath = $projectRootPath . '/var/log/productNames-import.log';
 
-    $GLOBALS['TYPO3_CONF_VARS']['LOG']['Pn']['PnUniformProductNames']['Command']['ImportCommand'] = [
+    $GLOBALS['TYPO3_CONF_VARS']['LOG']['Proudnerds']['PnUniformProductNames']['Command']['ImportCommand'] = [
         'writerConfiguration' => [
             \TYPO3\CMS\Core\Log\LogLevel::INFO => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
