@@ -16,3 +16,4 @@ ChangeLog
 * 1.0.6 Maintenance release. Making sure directory for temporary data handling is created.
 * 1.0.7 Small change to allow rendering of the documentation
 * 1.0.8 Bugfix import log
+* 1.1.0 TYPO3 10.4 support

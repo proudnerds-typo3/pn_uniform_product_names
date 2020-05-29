@@ -10,10 +10,10 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => 0,
     'createDirs' => 'typo3temp/pn_uniform_product_names',
     'clearCacheOnLoad' => 0,
-    'version' => '1.0.8',
+    'version' => '1.1.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '9.5.0-9.5.99',
+            'typo3' => '9.5.0-10.9.99',
         ],
         'conflicts' => [],
         'suggests' => [],
