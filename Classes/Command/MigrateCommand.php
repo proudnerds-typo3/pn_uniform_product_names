@@ -392,5 +392,7 @@ class MigrateCommand extends Command
         $logMessage = 'Migration finished. ' . count($pages) . ' pages have been processed, ' . $numberOfProductNames . ' sets of productnames are migrated in the pages table';
         $io->text(['', $logMessage]);
         Typo3Utility::flashmessage($logMessage);
+
+        return 0;
     }
 }

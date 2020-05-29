@@ -59,6 +59,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
 
     /**
      * @return \Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     protected function getUniformeproductnamenRepository()
     {
@@ -150,7 +151,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
             $io->text(['', $logMessage]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
             Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-            return;
+            return 0;
         }
 
         $responseCode = $response->getStatusCode();
@@ -180,7 +181,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 $io->text(['', $logMessage]);
                 $this->logger->log(LogLevel::CRITICAL, $logMessage);
                 Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-                return;
+                return 0;
             }
         } catch (
         \Exception $e
@@ -193,7 +194,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
             ]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
             Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-            return;
+            return 0;
         }
 
         // Process the new productNames and store in database
@@ -245,5 +246,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
         $io->text(['', $logMessage]);
         $this->logger->log(LogLevel::INFO, $logMessage);
         Typo3Utility::flashmessage($logMessage);
+
+        return 0;
     }
 }
