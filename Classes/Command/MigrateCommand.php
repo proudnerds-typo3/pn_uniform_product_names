@@ -57,6 +57,7 @@ class MigrateCommand extends Command
 
     /**
      * @return \Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     protected function getUniformeproductnamenRepository()
     {
@@ -76,6 +77,7 @@ class MigrateCommand extends Command
      * Get Persistence Manager on demand
      *
      * @return PersistenceManager
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     protected function getPersistenceManager()
     {

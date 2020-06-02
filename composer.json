@@ -25,7 +25,7 @@
         }
     },
     "replace": {
-        "pn_uniform_product_names": "self.version",
+        "proudnerds-typo3/pn_uniform_product_names": "self.version",
         "typo3-ter/pn-uniform-product-names": "self.version"
     }
 }

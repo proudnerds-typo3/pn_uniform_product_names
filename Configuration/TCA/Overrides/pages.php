@@ -33,8 +33,7 @@ defined('TYPO3_MODE') || die();
             'exclude' => true,
             'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.uniform_product_names_aanvraag_url',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputLink'
+                'type' => 'input'
             ]
         ],
         'uniform_product_names_abstract' => [

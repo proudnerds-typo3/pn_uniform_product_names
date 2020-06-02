@@ -3,38 +3,25 @@
 namespace Proudnerds\PnUniformProductNames\ViewHelpers;
 
 use Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
-class GetProductNamesViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class GetProductNamesViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected static $objectManager;
-
     /**
      * uniformeproductnamenRepository
      *
      * @var UniformeproductnamenRepository
      */
-    protected static $uniformeproductnamenRepository;
+    protected $uniformeproductnamenRepository;
 
     /**
-     * @return UniformeproductnamenRepository
+     * Inject Uniformeproductnamen Repository to enable DI
+     *
+     * @param UniformeproductnamenRepository $uniformeproductnamenRepository
      */
-    protected static function getUniformeproductnamenRepository()
+    public function injectUniformeproductnamenRepository(UniformeproductnamenRepository $uniformeproductnamenRepository)
     {
-        if (static::$uniformeproductnamenRepository === null) {
-            static::$objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            static::$uniformeproductnamenRepository = static::$objectManager->get('Proudnerds\\PnUniformProductNames\\Domain\Repository\\UniformeproductnamenRepository');
-        }
-        return static::$uniformeproductnamenRepository;
+        $this->uniformeproductnamenRepository = $uniformeproductnamenRepository;
     }
 
     /**
@@ -46,23 +33,17 @@ class GetProductNamesViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstrac
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      * @return array|mixed
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+    public function render(
     ) {
-        $uids = explode(',', $arguments['uids']);
+        $uids = explode(',', $this->arguments['uids']);
         $productNames = [];
         foreach($uids as $uid) {
             $uid = (int)$uid;
             if ($uid > 0) {
                 /** @var \Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $product */
-                $product = static::getUniformeproductnamenRepository()->findByUid($uid);
+                $product = $this->uniformeproductnamenRepository->findByUid($uid);
                 if (is_a($product, 'Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen')) {
                     $productNames[] = $product;
                 }

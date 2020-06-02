@@ -17,3 +17,4 @@ ChangeLog
 * 1.0.7 Small change to allow rendering of the documentation
 * 1.0.8 Bugfix import log
 * 1.1.0 TYPO3 10.4 support
+* 1.1.1 TYPO3 10.4 support + bugfixes

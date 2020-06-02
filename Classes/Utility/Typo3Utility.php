@@ -57,6 +57,7 @@ class Typo3Utility
      * @param string $title Optional message title.
      * @param int $severity Optional severity, must be either of one of \TYPO3\CMS\Core\Messaging\FlashMessage constants
      * @param bool $storeInSession Optional, defines whether the message should be stored in the session or only for one request (default)
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public static function flashmessage($message = '', $title = '', $severity = FlashMessage::INFO, $storeInSession = false)
     {

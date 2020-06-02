@@ -4,7 +4,7 @@ if (!defined('TYPO3_MODE')) {
 }
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'PnUniformProductNames',
+    'Proudnerds.PnUniformProductNames',
     'PnForPages',
     [
         'Uniformeproductnamen' => 'show',

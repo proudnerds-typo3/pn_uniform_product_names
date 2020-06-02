@@ -79,6 +79,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
      * Get Persistence Manager on demand
      *
      * @return PersistenceManager
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     protected function getPersistenceManager()
     {
@@ -163,7 +164,6 @@ class ImportCommand extends Command implements LoggerAwareInterface
         }
 
         // Store XML file content in an array
-        $productNames = [];
         try {
             $xml = simplexml_load_string(file_get_contents($productNamesTempImportFilePath));
             $json = json_encode($xml);
