@@ -35,7 +35,9 @@ class UniformeproductnamenController extends ActionController
     }
 
     public function showAction() {
-        $pagesWithProductNames = $this->pagesRepository->findAllPagesWithProductNames();
+        $defaultExport = boolval($this->settings['defaultExport']);
+
+        $pagesWithProductNames = $this->pagesRepository->findAllPagesWithProductNames($defaultExport);
 
         $this->view->assignMultiple([
             'pages' => $pagesWithProductNames

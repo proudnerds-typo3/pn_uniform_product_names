@@ -18,3 +18,4 @@ ChangeLog
 * 1.0.8 Bugfix import log
 * 1.1.0 TYPO3 10.4 support
 * 1.1.1 TYPO3 10.4 support + bugfixes
+* 1.1.2 Added export settings

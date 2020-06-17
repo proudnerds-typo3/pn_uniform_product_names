@@ -12,6 +12,11 @@ plugin.tx_pnuniformproductnames {
                 onlineAanvragen = nee
             }
         }
+
+        # 0 or 1
+        # When set to 0 the page will only be included in the catalogi if a productname is filled in
+        # or when export in page properties is set to 1 ('Ja')
+        defaultExport = 0
     }
 }
 

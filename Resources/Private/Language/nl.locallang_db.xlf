@@ -5,6 +5,10 @@
           product-name="pn_uniform_product_names">
         <header/>
         <body>
+            <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_export"
+                        resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_export">
+                <target>Exporteer. Voeg deze pagina toe aan de catalogi</target>
+            </trans-unit>
             <trans-unit id="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience"
                         resname="tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience">
                 <target>Publiek</target>

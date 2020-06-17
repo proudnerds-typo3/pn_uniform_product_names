@@ -3,6 +3,19 @@ defined('TYPO3_MODE') || die();
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
     'pages', [
+        'uniform_product_names_export' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.uniform_product_names_export',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['Standaard', ''],
+                    ['Ja', '1'],
+                    ['Nee', '0']
+                ]
+            ]
+        ],
         'uniform_product_names_audience' => [
             'exclude' => true,
             'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.uniform_product_names_audience',
@@ -129,5 +142,5 @@ defined('TYPO3_MODE') || die();
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
-    ',--div--;LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen, uniform_product_names_abstract, uniform_product_names_audience, uniform_product_names_online_aanvragen, uniform_product_names_aanvraag_url, uniform_product_names_uniforme_productnaam, uniform_product_names_gerelateerd_product, uniform_product_names_product_html, uniform_product_names_language'
+    ',--div--;LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen, uniform_product_names_export, uniform_product_names_abstract, uniform_product_names_audience, uniform_product_names_online_aanvragen, uniform_product_names_aanvraag_url, uniform_product_names_uniforme_productnaam, uniform_product_names_gerelateerd_product, uniform_product_names_product_html, uniform_product_names_language'
 );

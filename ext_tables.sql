@@ -1,5 +1,6 @@
 CREATE TABLE pages
 (
+    uniform_product_names_export               varchar(255) DEFAULT '' NOT NULL,
     uniform_product_names_audience             varchar(255) DEFAULT '' NOT NULL,
     uniform_product_names_online_aanvragen     varchar(255) DEFAULT '' NOT NULL,
     uniform_product_names_aanvraag_url         text,
