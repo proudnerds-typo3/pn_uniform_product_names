@@ -5,7 +5,6 @@ namespace  Proudnerds\PnUniformProductNames\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 
 /**
@@ -57,12 +56,10 @@ class Typo3Utility
      * @param string $title Optional message title.
      * @param int $severity Optional severity, must be either of one of \TYPO3\CMS\Core\Messaging\FlashMessage constants
      * @param bool $storeInSession Optional, defines whether the message should be stored in the session or only for one request (default)
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public static function flashmessage($message = '', $title = '', $severity = FlashMessage::INFO, $storeInSession = false)
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $flashMessageService = $objectManager->get(flashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         $addMessage = GeneralUtility::makeInstance(FlashMessage::class,

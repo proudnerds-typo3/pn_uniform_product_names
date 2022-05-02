@@ -3,7 +3,9 @@
 namespace Proudnerds\PnUniformProductNames\Command;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen;
+use Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository;
 use Proudnerds\PnUniformProductNames\Utility\Typo3Utility;
 use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -11,14 +13,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Psr\Log\LoggerAwareTrait;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use GuzzleHttp\Client;
 
 /**
  * Class ImportCommand
@@ -46,28 +46,16 @@ class ImportCommand extends Command implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * uniformeproductnamenRepository
-     *
-     * @var \Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository
+     * @var UniformeproductnamenRepository
      */
     protected $uniformeproductnamenRepository;
 
     /**
-     * @return \Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
+     * @param UniformeproductnamenRepository $uniformeproductnamenRepository
      */
-    protected function getUniformeproductnamenRepository()
+    public function injectUniformeproductnamenRepository(UniformeproductnamenRepository $uniformeproductnamenRepository)
     {
-        if ($this->uniformeproductnamenRepository === null) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->uniformeproductnamenRepository = $this->objectManager->get('Proudnerds\\PnUniformProductNames\\Domain\Repository\\UniformeproductnamenRepository');
-        }
-        return $this->uniformeproductnamenRepository;
+        $this->uniformeproductnamenRepository = $uniformeproductnamenRepository;
     }
 
     /**
@@ -76,18 +64,11 @@ class ImportCommand extends Command implements LoggerAwareInterface
     protected $persistenceManager;
 
     /**
-     * Get Persistence Manager on demand
-     *
-     * @return PersistenceManager
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
+     * @param PersistenceManager $persistenceManager
      */
-    protected function getPersistenceManager()
+    public function injectPersistenceManager(PersistenceManager $persistenceManager)
     {
-        if (null === $this->persistenceManager) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        }
-        return $this->persistenceManager;
+        $this->persistenceManager = $persistenceManager;
     }
 
     protected function configure()
@@ -128,22 +109,19 @@ class ImportCommand extends Command implements LoggerAwareInterface
         $date = new \DateTime();
         $productNamesTempImportFilePath = $folderDirectory . 'UPL_import_' . $date->format('H-i-s_d-m-Y') . '.xml';
 
-        $additionalOptions = [
-            'headers' => ['Cache-Control' => 'no-cache'],
-            'allow_redirects' => false,
-            'save_to' => $productNamesTempImportFilePath
-        ];
+        $client = new Client();
 
         $logMessage = 'Making request to get ' . $url;
         $io->text(['', $logMessage]);
         $this->logger->log(LogLevel::INFO, $logMessage);
 
-        /** @var RequestFactory $requestFactory */
-        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
-
         // Save XML file
         try {
-            $response = $requestFactory->request($url, 'GET', $additionalOptions);
+            $response = $client->request('GET', $url, [
+                'sink' => $productNamesTempImportFilePath,
+                'headers' => ['Cache-Control' => 'no-cache'],
+                ['allow_redirects' => false]
+            ]);
         } catch (
         \Exception $e
         ) {
@@ -152,7 +130,8 @@ class ImportCommand extends Command implements LoggerAwareInterface
             $io->text(['', $logMessage]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
             Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-            return 0;
+            return Command::FAILURE;
+        } catch (GuzzleException $e) {
         }
 
         $responseCode = $response->getStatusCode();
@@ -181,7 +160,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 $io->text(['', $logMessage]);
                 $this->logger->log(LogLevel::CRITICAL, $logMessage);
                 Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-                return 0;
+                return Command::FAILURE;
             }
         } catch (
         \Exception $e
@@ -194,7 +173,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
             ]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
             Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-            return 0;
+            return Command::FAILURE;
         }
 
         // Process the new productNames and store in database
@@ -233,9 +212,9 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 // A productname could be multiple times in the XML, for example with different Grondslaglabels
                 // These are however not used, so we keep only 1 version of the productname
                 // Also dont insert already stored productnames
-                if (Typo3Utility::emptyObj($this->getUniformeproductnamenRepository()->findByTitle($productName->getTitle()))) {
-                    $this->getUniformeproductnamenRepository()->add($productName);
-                    $this->getPersistenceManager()->persistAll();
+                if (Typo3Utility::emptyObj($this->uniformeproductnamenRepository->findByTitle($productName->getTitle()))) {
+                    $this->uniformeproductnamenRepository->add($productName);
+                    $this->persistenceManager->persistAll();
                     $numberOfNewProductNames++;
                 }
             }
@@ -247,6 +226,6 @@ class ImportCommand extends Command implements LoggerAwareInterface
         $this->logger->log(LogLevel::INFO, $logMessage);
         Typo3Utility::flashmessage($logMessage);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

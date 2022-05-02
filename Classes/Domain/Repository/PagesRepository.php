@@ -26,6 +26,8 @@ class PagesRepository extends Repository
      * @param bool $defaultExport
      *
      * @return array
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function findAllPagesWithProductNames(bool $defaultExport) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
@@ -49,7 +51,7 @@ class PagesRepository extends Repository
             ->where(...$whereExpressions)
             ->orWhere(...$orWhereExpressions)
             ->execute();
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetchAssociative()) {
             $pages[] = $row;
         }
 

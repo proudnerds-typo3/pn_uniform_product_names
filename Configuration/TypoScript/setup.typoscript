@@ -55,11 +55,3 @@ productcatalogi {
         }
     }
 }
-
-config.tx_extbase.persistence.classes {
-    Proudnerds\PnUniformProductNames\Domain\Model\Pages {
-        mapping {
-            tableName = pages
-        }
-    }
-}

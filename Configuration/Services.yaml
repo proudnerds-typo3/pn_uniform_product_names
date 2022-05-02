@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Proudnerds\PnUniformProductNames\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+
+  Proudnerds\PnUniformProductNames\Command\ImportCommand:
+    tags:
+      - name: 'console.command'
+        command: 'pnuniformproductnames:import'
+        description: 'Import productnames from the Uniforme Productenlijst'

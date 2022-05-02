@@ -3,18 +3,17 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Proudnerds.PnUniformProductNames',
-    'PnForPages',
-    [
-        'Uniformeproductnamen' => 'show',
-    ],
-    [
-        'Uniformeproductnamen' => 'show',
-    ]
-);
-
-call_user_func(function () {
+$boot = static function (): void {
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Proudnerds.PnUniformProductNames',
+        'PnForPages',
+        [
+            \Proudnerds\PnUniformProductNames\Controller\UniformeproductnamenController::class => 'show'
+        ],
+        [
+            \Proudnerds\PnUniformProductNames\Controller\UniformeproductnamenController::class => 'show'
+        ]
+    );
 
     $projectRootPath = TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
     $productNamesImportLogFilePath = $projectRootPath . '/var/log/productNames-import.log';
@@ -53,19 +52,22 @@ call_user_func(function () {
             ],
         ]
     ];
-});
 
-$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Core\Imaging\IconRegistry::class);
-$iconPath = 'EXT:pn_uniform_product_names/Resources/Public/Icons/';
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Core\Imaging\IconRegistry::class);
+    $iconPath = 'EXT:pn_uniform_product_names/Resources/Public/Icons/';
 
-$svgIcons = [
-    'tx_pnuniformproductnames_domain_model_uniformeproductnamen' => $iconPath . 'tx_pnuniformproductnames_domain_model_uniformeproductnamen.svg'
-];
+    $svgIcons = [
+        'tx_pnuniformproductnames_domain_model_uniformeproductnamen' => $iconPath . 'tx_pnuniformproductnames_domain_model_uniformeproductnamen.svg'
+    ];
 
-foreach ($svgIcons as $identifier => $path) {
-    $iconRegistry->registerIcon(
-        $identifier,
-        \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        ['source' => $path]
-    );
-}
+    foreach ($svgIcons as $identifier => $path) {
+        $iconRegistry->registerIcon(
+            $identifier,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => $path]
+        );
+    }
+};
+
+$boot();
+unset($boot);

@@ -12,8 +12,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class UniformeproductnamenController extends ActionController
 {
     /**
-     * pagesRepository
-     *
      * @var PagesRepository
      */
     protected $pagesRepository = null;
@@ -21,8 +19,9 @@ class UniformeproductnamenController extends ActionController
     /**
      * @param PagesRepository $pagesRepository
      */
-    public function injectPagesRepository(PagesRepository $pagesRepository)
-    {
+    public function __construct(
+        PagesRepository $pagesRepository
+    ) {
         $this->pagesRepository = $pagesRepository;
     }
 
@@ -34,6 +33,10 @@ class UniformeproductnamenController extends ActionController
         $this->request->setFormat('xml');
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function showAction() {
         $defaultExport = boolval($this->settings['defaultExport']);
 
