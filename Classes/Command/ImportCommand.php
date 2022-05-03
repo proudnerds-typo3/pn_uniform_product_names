@@ -93,6 +93,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
      *
      * @return int|void|null
      * @throws Exception
+     * @throws GuzzleException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -122,16 +123,44 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 'headers' => ['Cache-Control' => 'no-cache'],
                 ['allow_redirects' => false]
             ]);
-        } catch (
-        \Exception $e
-        ) {
-            $response = $e->getMessage();
-            $logMessage = $response;
-            $io->text(['', $logMessage]);
-            $this->logger->log(LogLevel::CRITICAL, $logMessage);
-            Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-            return Command::FAILURE;
         } catch (GuzzleException $e) {
+
+            if (method_exists($e,'hasResponse')) {
+                $response = $e->getResponse();
+                $error = 'URL : ' . $url . PHP_EOL;
+                $error .= 'HTTP status code: ' . $response->getStatusCode() . PHP_EOL;
+                $error .= 'Response message: ' . $response->getReasonPhrase() . PHP_EOL;
+
+                $body = json_decode((string) $response->getBody());
+                if ($body) {
+                    $error .= 'Body: ' . $body . PHP_EOL; // Body as the decoded JSON;
+                }
+
+                $headers = $response->getHeaders();
+                if (is_array($headers)) {
+                    $headers = implode("&",array_map(function($a) {return implode("~",$a);},$headers));
+                }
+                $error .= 'Headers: ' . $headers . PHP_EOL;
+                $error .= 'Is the header presented (Content-Type): ' .$response->hasHeader('Content-Type') . PHP_EOL;
+                $error .= 'Concrete header value: ' . $response->getHeader('Content-Type')[0] . PHP_EOL . PHP_EOL;
+
+                $io->text(['', $error]);
+                $this->logger->log(LogLevel::CRITICAL, $error);
+                Typo3Utility::flashmessage($error, '', FlashMessage::ERROR);
+                return Command::FAILURE;
+            } else {
+                $logMessage = 'Unknown Guzzle error, no response from ' . $url . PHP_EOL . $e->getCode() . PHP_EOL . $e->getMessage();
+                $io->text(['', $logMessage]);
+                $this->logger->log(LogLevel::CRITICAL, $logMessage);
+                Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
+                return Command::FAILURE;
+            }
+        } catch (\Exception $e) {
+                $logMessage = 'Unknown error, no response from ' . $url . PHP_EOL . $e->getCode() . PHP_EOL . $e->getMessage();
+                $io->text(['', $logMessage]);
+                $this->logger->log(LogLevel::CRITICAL, $logMessage);
+                Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
+                return Command::FAILURE;
         }
 
         $responseCode = $response->getStatusCode();
