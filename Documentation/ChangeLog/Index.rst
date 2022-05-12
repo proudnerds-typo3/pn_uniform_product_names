@@ -20,3 +20,4 @@ ChangeLog
 * 1.1.1 TYPO3 10.4 support + bugfixes
 * 1.1.2 Added export settings
 * 11.5.0 TYPO3 11.5 release. Removed migration script.
+* 11.5.1 bugfix SQL no default value for text fields
