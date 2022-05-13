@@ -19,3 +19,4 @@ ChangeLog
 * 1.1.0 TYPO3 10.4 support
 * 1.1.1 TYPO3 10.4 support + bugfixes
 * 1.1.2 Added export settings
+* 1.1.3 bugfix SQL no default value for text fields (PHP 7.4)
