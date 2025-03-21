@@ -1,11 +1,15 @@
 <?php
 
-namespace  Proudnerds\PnUniformProductNames\Utility;
+namespace Proudnerds\PnUniformProductNames\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
+use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Class: Typo3Utility
@@ -18,19 +22,19 @@ class Typo3Utility
     /**
      * Get typoscript settings for tx_pnuniformproductnames
      *
-     * @return mixed
+     * @return array
      */
-    public static function getSettings()
+    public static function getSettings(string $pluginSignature = 'pnuniformproductnames'): array
     {
-        $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
-        $typoScriptSettings = $configurationManager->getTypoScriptSetup();
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $fullTypoScript = $configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+        );
 
-        $typoScriptService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\TypoScriptService::class);
-        $typoScriptSettingsWithoutDots = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScriptSettings);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $plainTypoScript = $typoScriptService->convertTypoScriptArrayToPlainArray($fullTypoScript);
 
-        $settings = $typoScriptSettingsWithoutDots['plugin']['tx_pnuniformproductnames']['settings'];
-
-        return $settings;
+        return $plainTypoScript['plugin']['tx_' . strtolower($pluginSignature)]['settings'] ?? [];
     }
 
     /**
@@ -42,7 +46,7 @@ class Typo3Utility
      */
     public static function emptyObj($obj)
     {
-        foreach ($obj AS $prop) {
+        foreach ($obj as $prop) {
             return false;
         }
 
@@ -54,21 +58,23 @@ class Typo3Utility
      *
      * @param string $message The message.
      * @param string $title Optional message title.
-     * @param int $severity Optional severity, must be either of one of \TYPO3\CMS\Core\Messaging\FlashMessage constants
+     * @param int|ContextualFeedbackSeverity $severity Optional severity, must be either of one of \TYPO3\CMS\Core\Messaging\FlashMessage constants
      * @param bool $storeInSession Optional, defines whether the message should be stored in the session or only for one request (default)
+     * @throws Exception
      */
-    public static function flashmessage($message = '', $title = '', $severity = FlashMessage::INFO, $storeInSession = false)
+    public static function flashmessage(string $message = '', string $title = '', ContextualFeedbackSeverity|int $severity = ContextualFeedbackSeverity::INFO, $storeInSession = false): void
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
-        $addMessage = GeneralUtility::makeInstance(FlashMessage::class,
+        $message = GeneralUtility::makeInstance(
+            FlashMessage::class,
             $message,
             $title,
             $severity,
             $storeInSession
         );
 
-        $messageQueue->addMessage($addMessage);
+        $messageQueue->enqueue($message);
     }
 }

@@ -1,6 +1,9 @@
 <?php
+
 namespace Proudnerds\PnUniformProductNames\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -26,10 +29,10 @@ class PagesRepository extends Repository
      * @param bool $defaultExport
      *
      * @return array
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws Exception
      */
-    public function findAllPagesWithProductNames(bool $defaultExport) {
+    public function findAllPagesWithProductNames(bool $defaultExport): array
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
 
         $whereExpressions = [];
@@ -37,20 +40,20 @@ class PagesRepository extends Repository
 
         if ($defaultExport) {
             // All pages will be exported except those with 'export' in page properties set on 'Nee'
-            $whereExpressions[] = $queryBuilder->expr()->eq('uniform_product_names_export', $queryBuilder->createNamedParameter('1', \PDO::PARAM_STR));
-            $orWhereExpressions[] = $queryBuilder->expr()->eq('uniform_product_names_export', $queryBuilder->createNamedParameter('', \PDO::PARAM_STR));
+            $whereExpressions[] = $queryBuilder->expr()->eq('uniform_product_names_export', $queryBuilder->createNamedParameter('1', Connection::PARAM_STR));
+            $orWhereExpressions[] = $queryBuilder->expr()->eq('uniform_product_names_export', $queryBuilder->createNamedParameter('', Connection::PARAM_STR));
         } else {
-            $whereExpressions[] = $queryBuilder->expr()->gt('uniform_product_names_uniforme_productnaam', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT));
-            $orWhereExpressions[] = $queryBuilder->expr()->eq('uniform_product_names_export', $queryBuilder->createNamedParameter('1', \PDO::PARAM_STR));
+            $whereExpressions[] = $queryBuilder->expr()->gt('uniform_product_names_uniforme_productnaam', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT));
+            $orWhereExpressions[] = $queryBuilder->expr()->eq('uniform_product_names_export', $queryBuilder->createNamedParameter('1', Connection::PARAM_STR));
         }
 
         $pages = [];
         $statement = $queryBuilder
             ->select('*')
-            ->from ('pages')
+            ->from('pages')
             ->where(...$whereExpressions)
             ->orWhere(...$orWhereExpressions)
-            ->execute();
+            ->executeQuery();
         while ($row = $statement->fetchAssociative()) {
             $pages[] = $row;
         }

@@ -21,3 +21,5 @@ ChangeLog
 * 1.1.2 Added export settings
 * 11.5.0 TYPO3 11.5 release. Removed migration script.
 * 11.5.1 bugfix SQL no default value for text fields
+* 12.4.1 TYPO3 12.4 support
+* 13.4.0 TYPO3 13.4 support

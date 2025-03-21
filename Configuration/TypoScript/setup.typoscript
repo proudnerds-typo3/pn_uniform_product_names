@@ -1,4 +1,5 @@
 plugin.tx_pnuniformproductnames {
+    mvc.callDefaultActionIfActionCantBeResolved = 1
     settings {
         sourceXmlUrl = https://standaarden.overheid.nl/owms/oquery/UPL-gemeente.xml
 
@@ -41,11 +42,7 @@ productcatalogi {
         extensionName = PnUniformProductNames
         pluginName = PnForPages
         vendorName = Proudnerds
-        switchableControllerActions {
-            Uniformeproductnamen {
-                1 = show
-            }
-        }
+
         ## Replace invalid xhtml
         stdWrap.replacement {
             10  {

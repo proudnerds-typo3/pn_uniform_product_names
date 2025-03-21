@@ -1,6 +1,9 @@
 <?php
+
 namespace Proudnerds\PnUniformProductNames\Domain\Model;
 
+use TYPO3\CMS\Extbase\Annotation\Validate;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /***
  *
@@ -15,42 +18,44 @@ namespace Proudnerds\PnUniformProductNames\Domain\Model;
 /**
  * Uniformeproductnamen
  */
-class Uniformeproductnamen extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Uniformeproductnamen extends AbstractEntity
 {
-
     /**
      * title
-     * 
+     *
      * @var string
-     * @TYPO3\CMS\Extbase\Annotation\Validate("NotEmpty")
      */
-    protected $title = '';
+    #[Validate([
+        'validator' => 'NotEmpty',
+    ])]
+    protected string $title = '';
 
     /**
      * uri
-     * 
+     *
      * @var string
-     * @TYPO3\CMS\Extbase\Annotation\Validate("NotEmpty")
      */
-    protected $uri = '';
+    #[Validate([
+        'validator' => 'NotEmpty',
+    ])]
+    protected string $uri = '';
 
     /**
      * Returns the title
-     * 
+     *
      * @return string $title
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
      * Sets the title
-     * 
+     *
      * @param string $title
-     * @return void
      */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -60,7 +65,7 @@ class Uniformeproductnamen extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
      *
      * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
@@ -69,9 +74,8 @@ class Uniformeproductnamen extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
      * Sets the Uri
      *
      * @param string $uri
-     * @return void
      */
-    public function setUri($uri)
+    public function setUri(string $uri): void
     {
         $this->uri = $uri;
     }

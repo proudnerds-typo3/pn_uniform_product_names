@@ -1,72 +1,62 @@
 <?php
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
+
+use Proudnerds\PnUniformProductNames\Controller\UniformeproductnamenController;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+
+defined('TYPO3') or die();
 
 $boot = static function (): void {
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'Proudnerds.PnUniformProductNames',
+    ExtensionUtility::configurePlugin(
+        'PnUniformProductNames',
         'PnForPages',
         [
-            \Proudnerds\PnUniformProductNames\Controller\UniformeproductnamenController::class => 'show'
+            UniformeproductnamenController::class => 'show',
         ],
         [
-            \Proudnerds\PnUniformProductNames\Controller\UniformeproductnamenController::class => 'show'
-        ]
+            UniformeproductnamenController::class => 'show',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_PLUGIN
     );
 
-    $projectRootPath = TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
+    $projectRootPath = GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
     $productNamesImportLogFilePath = $projectRootPath . '/var/log/productNames-import.log';
 
     $GLOBALS['TYPO3_CONF_VARS']['LOG']['Proudnerds']['PnUniformProductNames']['Command']['ImportCommand'] = [
         'writerConfiguration' => [
-            \TYPO3\CMS\Core\Log\LogLevel::INFO => [
+            LogLevel::INFO => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
-                    'logFile' => $productNamesImportLogFilePath
-                ]
+                    'logFile' => $productNamesImportLogFilePath,
+                ],
             ],
-            \TYPO3\CMS\Core\Log\LogLevel::NOTICE => [
+            LogLevel::NOTICE => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
-                    'logFile' => $productNamesImportLogFilePath
-                ]
+                    'logFile' => $productNamesImportLogFilePath,
+                ],
             ],
-            \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
+            LogLevel::WARNING => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
-                    'logFile' => $productNamesImportLogFilePath
-                ]
+                    'logFile' => $productNamesImportLogFilePath,
+                ],
             ],
-            \TYPO3\CMS\Core\Log\LogLevel::ERROR => [
+            LogLevel::ERROR => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
-                    'logFile' => $productNamesImportLogFilePath
-                ]
+                    'logFile' => $productNamesImportLogFilePath,
+                ],
             ],
-            \TYPO3\CMS\Core\Log\LogLevel::CRITICAL => [
+            LogLevel::CRITICAL => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
-                    'logFile' => $productNamesImportLogFilePath
-                ]
+                    'logFile' => $productNamesImportLogFilePath,
+                ],
             ],
-            \TYPO3\CMS\Core\Log\LogLevel::ALERT => [
+            LogLevel::ALERT => [
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
-                    'logFile' => $productNamesImportLogFilePath
-                ]
+                    'logFile' => $productNamesImportLogFilePath,
+                ],
             ],
-        ]
+        ],
     ];
-
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Core\Imaging\IconRegistry::class);
-    $iconPath = 'EXT:pn_uniform_product_names/Resources/Public/Icons/';
-
-    $svgIcons = [
-        'tx_pnuniformproductnames_domain_model_uniformeproductnamen' => $iconPath . 'tx_pnuniformproductnames_domain_model_uniformeproductnamen.svg'
-    ];
-
-    foreach ($svgIcons as $identifier => $path) {
-        $iconRegistry->registerIcon(
-            $identifier,
-            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-            ['source' => $path]
-        );
-    }
 };
 
 $boot();

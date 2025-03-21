@@ -1,8 +1,10 @@
 <?php
-defined('TYPO3_MODE') || die();
+
+defined('TYPO3') || die();
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
-    'pages', [
+    'pages',
+    [
         'uniform_product_names_export' => [
             'exclude' => true,
             'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.uniform_product_names_export',
@@ -10,11 +12,11 @@ defined('TYPO3_MODE') || die();
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['Standaard', ''],
-                    ['Ja', '1'],
-                    ['Nee', '0']
-                ]
-            ]
+                    ['label' => 'Standaard', 'value' => ''],
+                    ['label' => 'Ja', 'value' => '1'],
+                    ['label' => 'Nee', 'value' => '0'],
+                ],
+            ],
         ],
         'uniform_product_names_audience' => [
             'exclude' => true,
@@ -23,11 +25,11 @@ defined('TYPO3_MODE') || die();
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['Particulier', 'particulier'],
-                    ['Ondernemer', 'ondernemer'],
-                    ['Particulier en ondernemer', 'beide']
-                ]
-            ]
+                    ['label' => 'Particulier', 'value' => 'particulier'],
+                    ['label' => 'Ondernemer', 'value' => 'ondernemer'],
+                    ['label' => 'Particulier en ondernemer', 'value' => 'beide'],
+                ],
+            ],
         ],
         'uniform_product_names_online_aanvragen' => [
             'exclude' => true,
@@ -36,18 +38,18 @@ defined('TYPO3_MODE') || die();
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['Nee', 'nee'],
-                    ['Ja', 'ja'],
-                    ['DigiD', 'digid']
-                ]
+                    ['label' => 'Nee', 'value' => 'nee'],
+                    ['label' => 'Ja', 'value' => 'ja'],
+                    ['label' => 'DigiD', 'value' => 'digid'],
+                ],
             ],
         ],
         'uniform_product_names_aanvraag_url' => [
             'exclude' => true,
             'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.uniform_product_names_aanvraag_url',
             'config' => [
-                'type' => 'input'
-            ]
+                'type' => 'input',
+            ],
         ],
         'uniform_product_names_abstract' => [
             'exclude' => true,
@@ -55,8 +57,8 @@ defined('TYPO3_MODE') || die();
             'config' => [
                 'type' => 'text',
                 'cols' => 50,
-                'rows' => 6
-            ]
+                'rows' => 6,
+            ],
         ],
         'uniform_product_names_uniforme_productnaam' => [
             'exclude' => true,
@@ -117,17 +119,17 @@ defined('TYPO3_MODE') || die();
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.nl', 'nl'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.en', 'en'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.de', 'de'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.fr', 'fr'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.es', 'es'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.tr', 'tr'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.it', 'it'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.pl', 'pl'],
-                    ['LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.ro', 'ro'],
-                ]
-            ]
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.nl', 'value' => 'nl'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.en', 'value' => 'en'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.de', 'value' => 'de'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.fr', 'value' => 'fr'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.es', 'value' => 'es'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.tr', 'value' => 'tr'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.it', 'value' => 'it'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.pl', 'value' => 'pl'],
+                    ['label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_pages.taal.ro', 'value' => 'ro'],
+                ],
+            ],
         ],
         'uniform_product_names_product_html' => [
             'exclude' => true,
@@ -135,7 +137,7 @@ defined('TYPO3_MODE') || die();
             'config' => [
                 'type' => 'text',
                 'enableRichtext' => true,
-            ]
+            ],
         ],
     ]
 );

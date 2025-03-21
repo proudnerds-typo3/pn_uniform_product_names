@@ -1,4 +1,5 @@
 <?php
+
 namespace Proudnerds\PnUniformProductNames\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -20,7 +21,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 class UniformeproductnamenRepository extends Repository
 {
     /**
-     * @var array
+     * @var array<non-empty-string, 'ASC'|'DESC'>
      */
     protected $defaultOrderings = ['sorting' => QueryInterface::ORDER_ASCENDING];
 }

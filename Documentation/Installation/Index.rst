@@ -32,4 +32,4 @@ More info
 =========
 
 * For an introduction on SC, please read Documentation/Extra/IPM-Samenwerkende-Catalogi.pdf. Details and requirements of the catalogi.xml structure, see chapter 3
-* SC XML validator https://scvalidator.logius.nl/
+* Validate your https://www.yourwebsite.nl/catalogi.xml at the SCValidator https://www.logius.nl/domeinen/interactie/samenwerkende-catalogi/scvalidator

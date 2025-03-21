@@ -2,23 +2,22 @@
 
 namespace Proudnerds\PnUniformProductNames\Command;
 
-use Exception;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen;
 use Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository;
 use Proudnerds\PnUniformProductNames\Utility\Typo3Utility;
 use Psr\Log\LoggerAwareInterface;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Log\LogLevel;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use GuzzleHttp\Client;
 
 /**
  * Class ImportCommand
@@ -26,20 +25,10 @@ use GuzzleHttp\Client;
  * Imports and updates Uniform Product Names
  *
  * 2020 Jacco van der Post <jacco.vanderpost@proudnerds.com>, Proud Nerds
- *
- * @package Proudnerds\PnUniformProductNames\Command
- *
- * Run in console (with correct context):
- * TYPO3_CONTEXT=Development/local php  ./vendor/bin/typo3 PnUniformProductNames:import
- *
- * Add in TYPO3 scheduler via:
- * Execute console commands
- *
  */
 
 /**
  * Class ImportCommand
- * @package Proudnerds\PnUniformProductNames\Command
  */
 class ImportCommand extends Command implements LoggerAwareInterface
 {
@@ -50,28 +39,16 @@ class ImportCommand extends Command implements LoggerAwareInterface
      */
     protected $uniformeproductnamenRepository;
 
-    /**
-     * @param UniformeproductnamenRepository $uniformeproductnamenRepository
-     */
-    public function injectUniformeproductnamenRepository(UniformeproductnamenRepository $uniformeproductnamenRepository)
+    public function __construct(UniformeproductnamenRepository $uniformeproductnamenRepository, \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager)
     {
+        parent::__construct();
         $this->uniformeproductnamenRepository = $uniformeproductnamenRepository;
-    }
-
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * @param PersistenceManager $persistenceManager
-     */
-    public function injectPersistenceManager(PersistenceManager $persistenceManager)
-    {
         $this->persistenceManager = $persistenceManager;
     }
 
-    protected function configure()
+    protected PersistenceManager $persistenceManager;
+
+    protected function configure(): void
     {
         $this->setDescription('Imports UPL productnames.')
             ->setHelp('This command imports productnames from the Uniforme Productenlijst...');
@@ -81,7 +58,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('Importing productnames to database');
@@ -91,11 +68,11 @@ class ImportCommand extends Command implements LoggerAwareInterface
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void|null
-     * @throws Exception
+     * @return int
+     * @throws \Exception
      * @throws GuzzleException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectRootPath = GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
         $folderName = '/public/typo3temp/pn_uniform_product_names/';
@@ -105,7 +82,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
         }
         $io = new SymfonyStyle($input, $output);
         $settings = Typo3Utility::getSettings();
-        $url = $settings['sourceXmlUrl'];
+        $url = htmlspecialchars($settings['sourceXmlUrl']);
 
         $date = new \DateTime();
         $productNamesTempImportFilePath = $folderDirectory . 'UPL_import_' . $date->format('H-i-s_d-m-Y') . '.xml';
@@ -121,46 +98,35 @@ class ImportCommand extends Command implements LoggerAwareInterface
             $response = $client->request('GET', $url, [
                 'sink' => $productNamesTempImportFilePath,
                 'headers' => ['Cache-Control' => 'no-cache'],
-                ['allow_redirects' => false]
+                ['allow_redirects' => false],
             ]);
-        } catch (GuzzleException $e) {
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $error = 'URL : ' . $url . PHP_EOL;
+            $error .= 'HTTP status code: ' . $response->getStatusCode() . PHP_EOL;
+            $error .= 'Response message: ' . $response->getReasonPhrase() . PHP_EOL;
 
-            if (method_exists($e,'hasResponse')) {
-                $response = $e->getResponse();
-                $error = 'URL : ' . $url . PHP_EOL;
-                $error .= 'HTTP status code: ' . $response->getStatusCode() . PHP_EOL;
-                $error .= 'Response message: ' . $response->getReasonPhrase() . PHP_EOL;
-
-                $body = json_decode((string) $response->getBody());
-                if ($body) {
-                    $error .= 'Body: ' . $body . PHP_EOL; // Body as the decoded JSON;
-                }
-
-                $headers = $response->getHeaders();
-                if (is_array($headers)) {
-                    $headers = implode("&",array_map(function($a) {return implode("~",$a);},$headers));
-                }
-                $error .= 'Headers: ' . $headers . PHP_EOL;
-                $error .= 'Is the header presented (Content-Type): ' .$response->hasHeader('Content-Type') . PHP_EOL;
-                $error .= 'Concrete header value: ' . $response->getHeader('Content-Type')[0] . PHP_EOL . PHP_EOL;
-
-                $io->text(['', $error]);
-                $this->logger->log(LogLevel::CRITICAL, $error);
-                Typo3Utility::flashmessage($error, '', FlashMessage::ERROR);
-                return Command::FAILURE;
-            } else {
-                $logMessage = 'Unknown Guzzle error, no response from ' . $url . PHP_EOL . $e->getCode() . PHP_EOL . $e->getMessage();
-                $io->text(['', $logMessage]);
-                $this->logger->log(LogLevel::CRITICAL, $logMessage);
-                Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-                return Command::FAILURE;
+            $body = json_decode((string)$response->getBody());
+            if ($body) {
+                $error .= 'Body: ' . $body . PHP_EOL; // Body as the decoded JSON;
             }
+
+            $headers = $response->getHeaders();
+            $headers = implode('&', array_map(function ($a) {return implode('~', $a);}, $headers));
+            $error .= 'Headers: ' . $headers . PHP_EOL;
+            $error .= 'Is the header presented (Content-Type): ' . $response->hasHeader('Content-Type') . PHP_EOL;
+            $error .= 'Concrete header value: ' . $response->getHeader('Content-Type')[0] . PHP_EOL . PHP_EOL;
+
+            $io->text(['', $error]);
+            $this->logger->log(LogLevel::CRITICAL, $error);
+            Typo3Utility::flashmessage($error, '', ContextualFeedbackSeverity::ERROR);
+            return Command::FAILURE;
         } catch (\Exception $e) {
-                $logMessage = 'Unknown error, no response from ' . $url . PHP_EOL . $e->getCode() . PHP_EOL . $e->getMessage();
-                $io->text(['', $logMessage]);
-                $this->logger->log(LogLevel::CRITICAL, $logMessage);
-                Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
-                return Command::FAILURE;
+            $logMessage = 'Unknown error, no response from ' . $url . PHP_EOL . $e->getCode() . PHP_EOL . $e->getMessage();
+            $io->text(['', $logMessage]);
+            $this->logger->log(LogLevel::CRITICAL, $logMessage);
+            Typo3Utility::flashmessage($logMessage, '', ContextualFeedbackSeverity::ERROR);
+            return Command::FAILURE;
         }
 
         $responseCode = $response->getStatusCode();
@@ -188,20 +154,20 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 $logMessage = 'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath;
                 $io->text(['', $logMessage]);
                 $this->logger->log(LogLevel::CRITICAL, $logMessage);
-                Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
+                Typo3Utility::flashmessage($logMessage, '', ContextualFeedbackSeverity::ERROR);
                 return Command::FAILURE;
             }
         } catch (
-        \Exception $e
+            \Exception $e
         ) {
             $response = $e->getMessage();
             $logMessage = $response;
             $io->text([
                 '',
-                'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath . ': ' . $logMessage
+                'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath . ': ' . $logMessage,
             ]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
-            Typo3Utility::flashmessage($logMessage, '', FlashMessage::ERROR);
+            Typo3Utility::flashmessage($logMessage, '', ContextualFeedbackSeverity::ERROR);
             return Command::FAILURE;
         }
 
@@ -209,17 +175,12 @@ class ImportCommand extends Command implements LoggerAwareInterface
         $numberOfProductNames = 0;
         $numberOfNewProductNames = 0;
 
-        $progress = new ProgressBar($output, count($productNames['results']['result']));
-        $progress->start();
-
         foreach ($productNames['results']['result'] as $result) {
-
             // Look at the debug info of the array in TYPO3 backend Scheduler task to see the structure
             //Debug($result);
 
             $numberOfProductNames++;
-            $progress->advance();
-            $productName = new Uniformeproductnamen;
+            $productName = new Uniformeproductnamen();
             $validProductName = false;
 
             foreach ($result['binding'] as $binding) {
@@ -241,6 +202,7 @@ class ImportCommand extends Command implements LoggerAwareInterface
                 // A productname could be multiple times in the XML, for example with different Grondslaglabels
                 // These are however not used, so we keep only 1 version of the productname
                 // Also dont insert already stored productnames
+                // @phpstan-ignore-next-line
                 if (Typo3Utility::emptyObj($this->uniformeproductnamenRepository->findByTitle($productName->getTitle()))) {
                     $this->uniformeproductnamenRepository->add($productName);
                     $this->persistenceManager->persistAll();
@@ -249,7 +211,6 @@ class ImportCommand extends Command implements LoggerAwareInterface
             }
         }
 
-        $progress->finish();
         $logMessage = 'Import of uniform product names finished. ' . $numberOfProductNames . ' items have been processed, ' . $numberOfNewProductNames . ' new productnames are added to the database in tx_pnuniformproductnames_domain_model_uniformeproductnamen';
         $io->text(['', $logMessage]);
         $this->logger->log(LogLevel::INFO, $logMessage);

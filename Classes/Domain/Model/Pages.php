@@ -1,6 +1,10 @@
 <?php
+
 namespace Proudnerds\PnUniformProductNames\Domain\Model;
 
+use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /***
  *
@@ -15,73 +19,71 @@ namespace Proudnerds\PnUniformProductNames\Domain\Model;
 /**
  * Pages
  */
-class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Pages extends AbstractEntity
 {
-
     /**
      * uniformProductNamesAudience
-     * 
+     *
      * @var string
      */
-    protected $uniformProductNamesAudience = '';
+    protected string $uniformProductNamesAudience = '';
 
     /**
      * uniformProductNamesOnlineAanvragen
-     * 
+     *
      * @var string
      */
-    protected $uniformProductNamesOnlineAanvragen = '';
+    protected string $uniformProductNamesOnlineAanvragen = '';
 
     /**
      * uniformProductNamesAanvraagUrl
-     * 
+     *
      * @var string
      */
-    protected $uniformProductNamesAanvraagUrl = '';
+    protected string $uniformProductNamesAanvraagUrl = '';
 
     /**
      * uniformProductNamesAbstract
      *
      * @var string
      */
-    protected $uniformProductNamesAbstract = '';
+    protected string $uniformProductNamesAbstract = '';
 
     /**
      * uniformProductNamesProductHtml
      *
      * @var string
      */
-    protected $uniformProductNamesProductHtml = '';
+    protected string $uniformProductNamesProductHtml = '';
 
     /**
      * uniformProductNamesLanguage
      *
      * @var string
      */
-    protected $uniformProductNamesLanguage = '';
+    protected string $uniformProductNamesLanguage = '';
 
     /**
      * uniformProductNamesUniformeProductnaam
-     * 
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen>
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
+     *
+     * @var ObjectStorage<Uniformeproductnamen>
      */
-    protected $uniformProductNamesUniformeProductnaam = null;
+    #[Lazy()]
+    protected ObjectStorage $uniformProductNamesUniformeProductnaam;
 
     /**
      * uniformProductNamesGerelateerdProduct
-     * 
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen>
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
+     *
+     * @var ObjectStorage<Uniformeproductnamen>
      */
-    protected $uniformProductNamesGerelateerdProduct = null;
+    #[Lazy()]
+    protected ObjectStorage $uniformProductNamesGerelateerdProduct;
 
     /**
      * __construct
      */
     public function __construct()
     {
-
         //Do not remove the next line: It would break the functionality
         $this->initStorageObjects();
     }
@@ -91,160 +93,152 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * Do not modify this method!
      * It will be rewritten on each save in the extension builder
      * You may modify the constructor of this class instead
-     * 
-     * @return void
      */
-    protected function initStorageObjects()
+    protected function initStorageObjects(): void
     {
-        $this->uniformProductNamesUniformeProductnaam = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->uniformProductNamesGerelateerdProduct = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->uniformProductNamesUniformeProductnaam = new ObjectStorage();
+        $this->uniformProductNamesGerelateerdProduct = new ObjectStorage();
     }
 
     /**
      * Returns the uniformProductNamesAudience
-     * 
+     *
      * @return string $uniformProductNamesAudience
      */
-    public function getUniformProductNamesAudience()
+    public function getUniformProductNamesAudience(): string
     {
         return $this->uniformProductNamesAudience;
     }
 
     /**
      * Sets the uniformProductNamesAudience
-     * 
+     *
      * @param string $uniformProductNamesAudience
-     * @return void
      */
-    public function setUniformProductNamesAudience($uniformProductNamesAudience)
+    public function setUniformProductNamesAudience(string $uniformProductNamesAudience): void
     {
         $this->uniformProductNamesAudience = $uniformProductNamesAudience;
     }
 
     /**
      * Returns the uniformProductNamesOnlineAanvragen
-     * 
+     *
      * @return string $uniformProductNamesOnlineAanvragen
      */
-    public function getUniformProductNamesOnlineAanvragen()
+    public function getUniformProductNamesOnlineAanvragen(): string
     {
         return $this->uniformProductNamesOnlineAanvragen;
     }
 
     /**
      * Sets the uniformProductNamesOnlineAanvragen
-     * 
+     *
      * @param string $uniformProductNamesOnlineAanvragen
-     * @return void
      */
-    public function setUniformProductNamesOnlineAanvragen($uniformProductNamesOnlineAanvragen)
+    public function setUniformProductNamesOnlineAanvragen(string $uniformProductNamesOnlineAanvragen): void
     {
         $this->uniformProductNamesOnlineAanvragen = $uniformProductNamesOnlineAanvragen;
     }
 
     /**
      * Returns the uniformProductNamesAanvraagUrl
-     * 
+     *
      * @return string $uniformProductNamesAanvraagUrl
      */
-    public function getUniformProductNamesAanvraagUrl()
+    public function getUniformProductNamesAanvraagUrl(): string
     {
         return $this->uniformProductNamesAanvraagUrl;
     }
 
     /**
      * Sets the uniformProductNamesAanvraagUrl
-     * 
+     *
      * @param string $uniformProductNamesAanvraagUrl
-     * @return void
      */
-    public function setUniformProductNamesAanvraagUrl($uniformProductNamesAanvraagUrl)
+    public function setUniformProductNamesAanvraagUrl(string $uniformProductNamesAanvraagUrl): void
     {
         $this->uniformProductNamesAanvraagUrl = $uniformProductNamesAanvraagUrl;
     }
 
     /**
      * Adds a Uniformeproductnamen
-     * 
-     * @param \Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesUniformeProductnaam
-     * @return void
+     *
+     * @param Uniformeproductnamen $uniformProductNamesUniformeProductnaam
      */
-    public function addUniformProductNamesUniformeProductnaam(\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesUniformeProductnaam)
-    {
+    public function addUniformProductNamesUniformeProductnaam(
+        Uniformeproductnamen $uniformProductNamesUniformeProductnaam
+    ): void {
         $this->uniformProductNamesUniformeProductnaam->attach($uniformProductNamesUniformeProductnaam);
     }
 
     /**
      * Removes a Uniformeproductnamen
-     * 
-     * @param \Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesUniformeProductnaamToRemove The Uniformeproductnamen to be removed
-     * @return void
+     *
+     * @param Uniformeproductnamen $uniformProductNamesUniformeProductnaamToRemove The Uniformeproductnamen to be removed
      */
-    public function removeUniformProductNamesUniformeProductnaam(\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesUniformeProductnaamToRemove)
-    {
+    public function removeUniformProductNamesUniformeProductnaam(
+        Uniformeproductnamen $uniformProductNamesUniformeProductnaamToRemove
+    ): void {
         $this->uniformProductNamesUniformeProductnaam->detach($uniformProductNamesUniformeProductnaamToRemove);
     }
 
     /**
      * Returns the uniformProductNamesUniformeProductnaam
-     * 
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen> $uniformProductNamesUniformeProductnaam
+     *
+     * @return ObjectStorage|null $uniformProductNamesUniformeProductnaam
      */
-    public function getUniformProductNamesUniformeProductnaam()
+    public function getUniformProductNamesUniformeProductnaam(): ?ObjectStorage
     {
         return $this->uniformProductNamesUniformeProductnaam;
     }
 
     /**
      * Sets the uniformProductNamesUniformeProductnaam
-     * 
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen> $uniformProductNamesUniformeProductnaam
-     * @return void
+     *
+     * @param ObjectStorage<Uniformeproductnamen> $uniformProductNamesUniformeProductnaam
      */
-    public function setUniformProductNamesUniformeProductnaam(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $uniformProductNamesUniformeProductnaam)
+    public function setUniformProductNamesUniformeProductnaam(ObjectStorage $uniformProductNamesUniformeProductnaam): void
     {
         $this->uniformProductNamesUniformeProductnaam = $uniformProductNamesUniformeProductnaam;
     }
 
     /**
      * Adds a Uniformeproductnamen
-     * 
-     * @param \Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesGerelateerdProduct
-     * @return void
+     *
+     * @param Uniformeproductnamen $uniformProductNamesGerelateerdProduct
      */
-    public function addUniformProductNamesGerelateerdProduct(\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesGerelateerdProduct)
+    public function addUniformProductNamesGerelateerdProduct(Uniformeproductnamen $uniformProductNamesGerelateerdProduct): void
     {
         $this->uniformProductNamesGerelateerdProduct->attach($uniformProductNamesGerelateerdProduct);
     }
 
     /**
      * Removes a Uniformeproductnamen
-     * 
-     * @param \Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesGerelateerdProductToRemove The Uniformeproductnamen to be removed
-     * @return void
+     *
+     * @param Uniformeproductnamen $uniformProductNamesGerelateerdProductToRemove The Uniformeproductnamen to be removed
      */
-    public function removeUniformProductNamesGerelateerdProduct(\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $uniformProductNamesGerelateerdProductToRemove)
-    {
+    public function removeUniformProductNamesGerelateerdProduct(
+        Uniformeproductnamen $uniformProductNamesGerelateerdProductToRemove
+    ): void {
         $this->uniformProductNamesGerelateerdProduct->detach($uniformProductNamesGerelateerdProductToRemove);
     }
 
     /**
      * Returns the uniformProductNamesGerelateerdProduct
-     * 
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen> $uniformProductNamesGerelateerdProduct
+     *
+     * @return ObjectStorage|null $uniformProductNamesGerelateerdProduct
      */
-    public function getUniformProductNamesGerelateerdProduct()
+    public function getUniformProductNamesGerelateerdProduct(): ?ObjectStorage
     {
         return $this->uniformProductNamesGerelateerdProduct;
     }
 
     /**
      * Sets the uniformProductNamesGerelateerdProduct
-     * 
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen> $uniformProductNamesGerelateerdProduct
-     * @return void
+     *
+     * @param ObjectStorage<Uniformeproductnamen> $uniformProductNamesGerelateerdProduct
      */
-    public function setUniformProductNamesGerelateerdProduct(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $uniformProductNamesGerelateerdProduct)
+    public function setUniformProductNamesGerelateerdProduct(ObjectStorage $uniformProductNamesGerelateerdProduct): void
     {
         $this->uniformProductNamesGerelateerdProduct = $uniformProductNamesGerelateerdProduct;
     }
@@ -254,7 +248,7 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getUniformProductNamesAbstract()
+    public function getUniformProductNamesAbstract(): string
     {
         return $this->uniformProductNamesAbstract;
     }
@@ -263,9 +257,8 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * Sets the UniformProductNamesAbstract
      *
      * @param string $uniformProductNamesAbstract
-     * @return void
      */
-    public function setUniformProductNamesAbstract($uniformProductNamesAbstract)
+    public function setUniformProductNamesAbstract(string $uniformProductNamesAbstract): void
     {
         $this->uniformProductNamesAbstract = $uniformProductNamesAbstract;
     }
@@ -275,7 +268,7 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getUniformProductNamesProductHtml()
+    public function getUniformProductNamesProductHtml(): string
     {
         return $this->uniformProductNamesProductHtml;
     }
@@ -284,9 +277,8 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * Sets the UniformProductNamesProductHtml
      *
      * @param string $uniformProductNamesProductHtml
-     * @return void
      */
-    public function setUniformProductNamesProductHtml($uniformProductNamesProductHtml)
+    public function setUniformProductNamesProductHtml(string $uniformProductNamesProductHtml): void
     {
         $this->uniformProductNamesProductHtml = $uniformProductNamesProductHtml;
     }
@@ -296,7 +288,7 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getUniformProductNamesLanguage()
+    public function getUniformProductNamesLanguage(): string
     {
         return $this->uniformProductNamesLanguage;
     }
@@ -305,9 +297,8 @@ class Pages extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * Sets the UniformProductNamesLanguage
      *
      * @param string $uniformProductNamesLanguage
-     * @return void
      */
-    public function setUniformProductNamesLanguage($uniformProductNamesLanguage)
+    public function setUniformProductNamesLanguage(string $uniformProductNamesLanguage): void
     {
         $this->uniformProductNamesLanguage = $uniformProductNamesLanguage;
     }

@@ -14,12 +14,7 @@ class GetProductNamesViewHelper extends AbstractViewHelper
      */
     protected $uniformeproductnamenRepository;
 
-    /**
-     * Inject Uniformeproductnamen Repository to enable DI
-     *
-     * @param UniformeproductnamenRepository $uniformeproductnamenRepository
-     */
-    public function injectUniformeproductnamenRepository(UniformeproductnamenRepository $uniformeproductnamenRepository)
+    public function __construct(\Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository $uniformeproductnamenRepository)
     {
         $this->uniformeproductnamenRepository = $uniformeproductnamenRepository;
     }
@@ -27,7 +22,7 @@ class GetProductNamesViewHelper extends AbstractViewHelper
     /**
      * Initialize arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('uids', 'string', 'String with comma seperated uids', true);
     }
@@ -39,7 +34,7 @@ class GetProductNamesViewHelper extends AbstractViewHelper
     ) {
         $uids = explode(',', $this->arguments['uids']);
         $productNames = [];
-        foreach($uids as $uid) {
+        foreach ($uids as $uid) {
             $uid = (int)$uid;
             if ($uid > 0) {
                 /** @var \Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen $product */

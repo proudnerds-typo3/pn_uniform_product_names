@@ -1,11 +1,13 @@
 <?php
+
+$languagePath = 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/';
+
 return [
     'ctrl' => [
-        'title' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen',
+        'title' => $languagePath . 'locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'sortby' => 'sorting',
         'versioningWS' => true,
         'languageField' => 'sys_language_uid',
@@ -19,7 +21,7 @@ return [
         ],
         'searchFields' => 'title,uri',
         'typeicon_classes' => [
-            'default' => 'tx_pnuniformproductnames_domain_model_uniformeproductnamen'
+            'default' => 'tx_pnuniformproductnames_domain_model_uniformeproductnamen',
         ],
     ],
     'types' => [
@@ -41,7 +43,14 @@ return [
                 'renderType' => 'selectSingle',
                 'default' => 0,
                 'items' => [
-                    ['', 0],
+                    [
+                        'label' => 'None',
+                        'value' => 0,
+                    ],
+                    [
+                        'label' => 'Active',
+                        'value' => 1,
+                    ],
                 ],
                 'foreign_table' => 'tx_pnuniformproductnames_domain_model_uniformeproductnamen',
                 'foreign_table_where' => 'AND {#tx_pnuniformproductnames_domain_model_uniformeproductnamen}.{#pid}=###CURRENT_PID### AND {#tx_pnuniformproductnames_domain_model_uniformeproductnamen}.{#sys_language_uid} IN (-1,0)',
@@ -66,64 +75,30 @@ return [
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'items' => [
-                    [
-                        0 => '',
-                        1 => '',
-                        'invertStateDisplay' => true
-                    ]
-                ],
-            ],
-        ],
-        'starttime' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
                 'default' => 0,
-                'behaviour' => [
-                    'allowLanguageSynchronization' => true
-                ]
-            ],
-        ],
-        'endtime' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
-                'default' => 0,
-                'range' => [
-                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
-                ],
-                'behaviour' => [
-                    'allowLanguageSynchronization' => true
-                ]
             ],
         ],
 
         'title' => [
             'exclude' => true,
-            'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen.title',
+            'label' => $languagePath . 'locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen.title',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required'
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'uri' => [
             'exclude' => true,
-            'label' => 'LLL:EXT:pn_uniform_product_names/Resources/Private/Language/locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen.uri',
+            'label' => $languagePath . 'locallang_db.xlf:tx_pnuniformproductnames_domain_model_uniformeproductnamen.uri',
             'config' => [
                 'type' => 'text',
                 'cols' => 40,
                 'rows' => 15,
-                'eval' => 'trim,required'
-            ]
+                'eval' => 'trim',
+                'required' => true,
+            ],
         ],
-    
     ],
 ];
