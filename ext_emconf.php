@@ -7,10 +7,10 @@ $EM_CONF['pn_uniform_product_names'] = [
     'author' => 'Jacco van der Post, Tania Morales, Emile Blume',
     'author_email' => 'Emile.Blume@proudnerds.com',
     'state' => 'stable',
-    'version' => '13.4.0',
+    'version' => '14.3.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '13.4.0-13.4.99',
+            'typo3' => '14.3.0-14.3.99',
         ],
         'conflicts' => [],
         'suggests' => [],

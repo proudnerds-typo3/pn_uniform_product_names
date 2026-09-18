@@ -41,7 +41,7 @@
                     <f:format.raw>{settings.dcterms.authority}</f:format.raw>
                 </overheidproduct:owmskern>
                 <overheidproduct:owmsmantel>
-                    <f:switch expression="{page.audience}">
+                    <f:switch expression="{page.uniform_product_names_audience}">
                         <f:case value="beide">
                             <dcterms:audience scheme="overheid:Doelgroep">particulier</dcterms:audience>
                             <dcterms:audience scheme="overheid:Doelgroep">ondernemer</dcterms:audience>

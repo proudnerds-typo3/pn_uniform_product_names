@@ -4,6 +4,7 @@ namespace Proudnerds\PnUniformProductNames\Controller;
 
 use Proudnerds\PnUniformProductNames\Domain\Repository\PagesRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -30,9 +31,12 @@ class UniformeproductnamenController extends ActionController
      */
     public function showAction(): ResponseInterface
     {
-        $defaultExport = (bool)($this->settings['defaultExport']);
+        $defaultExport = (bool)($this->settings['defaultExport'] ?? false);
 
-        $pagesWithProductNames = $this->pagesRepository->findAllPagesWithProductNames($defaultExport);
+        $site = $this->request->getAttribute('site');
+        $siteRootPageId = $site instanceof Site ? $site->getRootPageId() : 0;
+
+        $pagesWithProductNames = $this->pagesRepository->findAllPagesWithProductNames($defaultExport, $siteRootPageId);
 
         $this->view->assignMultiple([
             'pages' => $pagesWithProductNames,

@@ -2,7 +2,6 @@
 
 namespace Proudnerds\PnUniformProductNames\Domain\Model;
 
-use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -68,7 +67,7 @@ class Pages extends AbstractEntity
      *
      * @var ObjectStorage<Uniformeproductnamen>
      */
-    #[Lazy()]
+    #[\TYPO3\CMS\Extbase\Attribute\ORM\Lazy()]
     protected ObjectStorage $uniformProductNamesUniformeProductnaam;
 
     /**
@@ -76,7 +75,7 @@ class Pages extends AbstractEntity
      *
      * @var ObjectStorage<Uniformeproductnamen>
      */
-    #[Lazy()]
+    #[\TYPO3\CMS\Extbase\Attribute\ORM\Lazy()]
     protected ObjectStorage $uniformProductNamesGerelateerdProduct;
 
     /**

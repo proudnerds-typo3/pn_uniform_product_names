@@ -2,7 +2,6 @@
 
 namespace Proudnerds\PnUniformProductNames\Domain\Model;
 
-use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /***
@@ -25,9 +24,7 @@ class Uniformeproductnamen extends AbstractEntity
      *
      * @var string
      */
-    #[Validate([
-        'validator' => 'NotEmpty',
-    ])]
+    #[\TYPO3\CMS\Extbase\Attribute\Validate(validator: 'NotEmpty')]
     protected string $title = '';
 
     /**
@@ -35,9 +32,7 @@ class Uniformeproductnamen extends AbstractEntity
      *
      * @var string
      */
-    #[Validate([
-        'validator' => 'NotEmpty',
-    ])]
+    #[\TYPO3\CMS\Extbase\Attribute\Validate(validator: 'NotEmpty')]
     protected string $uri = '';
 
     /**

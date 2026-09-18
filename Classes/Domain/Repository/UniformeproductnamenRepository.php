@@ -2,6 +2,7 @@
 
 namespace Proudnerds\PnUniformProductNames\Domain\Repository;
 
+use Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -17,6 +18,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  ***/
 /**
  * The repository for Uniformeproductnamens
+ *
+ * @extends Repository<Uniformeproductnamen>
  */
 class UniformeproductnamenRepository extends Repository
 {

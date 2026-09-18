@@ -2,7 +2,9 @@
 
 namespace Proudnerds\PnUniformProductNames\Utility;
 
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -24,9 +26,15 @@ class Typo3Utility
      *
      * @return array
      */
-    public static function getSettings(string $pluginSignature = 'pnuniformproductnames'): array
+    public static function getSettings(string $pluginSignature = 'pnuniformproductnames', int $pageId = 0): array
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+
+        $request = (new ServerRequest())
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE)
+            ->withQueryParams(['id' => $pageId]);
+        $configurationManager->setRequest($request);
+
         $fullTypoScript = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
         );
@@ -35,22 +43,6 @@ class Typo3Utility
         $plainTypoScript = $typoScriptService->convertTypoScriptArrayToPlainArray($fullTypoScript);
 
         return $plainTypoScript['plugin']['tx_' . strtolower($pluginSignature)]['settings'] ?? [];
-    }
-
-    /**
-     * Check if an object is empty
-     *
-     * @param $obj
-     *
-     * @return bool
-     */
-    public static function emptyObj($obj)
-    {
-        foreach ($obj as $prop) {
-            return false;
-        }
-
-        return true;
     }
 
     /**

@@ -19,7 +19,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'title,uri',
         'typeicon_classes' => [
             'default' => 'tx_pnuniformproductnames_domain_model_uniformeproductnamen',
         ],
@@ -67,6 +66,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
+                'searchable' => false,
             ],
         ],
         'hidden' => [

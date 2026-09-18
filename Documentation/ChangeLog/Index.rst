@@ -23,3 +23,4 @@ ChangeLog
 * 11.5.1 bugfix SQL no default value for text fields
 * 12.4.1 TYPO3 12.4 support
 * 13.4.0 TYPO3 13.4 support
+* 14.3.0 TYPO3 14.3 support. Import works on CLI and in the scheduler again, correct audience in the feed, shortcuts and translations no longer exported. Removed Typo3Utility::emptyObj().

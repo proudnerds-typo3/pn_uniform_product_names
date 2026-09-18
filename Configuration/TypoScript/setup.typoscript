@@ -36,12 +36,10 @@ productcatalogi {
         linkVars >
     }
 
-    10 = USER_INT
+    10 = EXTBASEPLUGIN
     10 {
-        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
         extensionName = PnUniformProductNames
         pluginName = PnForPages
-        vendorName = Proudnerds
 
         ## Replace invalid xhtml
         stdWrap.replacement {

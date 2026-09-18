@@ -14,7 +14,7 @@ Target group: **Administrators / Developers**
 * include the typoscript template
 * add the new page and uniform product fields to the editor backend user groups
 * adjust typoscript settings for spatial and authority. This extension is default configured for a Dutch municipal
-* add the scheduler task to import the product names, it can be found under "Execute console commands". The source XML is updated 4 times a year, according to ICTU.nl. You can also run this task in the console the first time to have some more log info. See Classes/Command/ImportCommand.php for howto. A log is created at /var/log/productNames-import.log
+* add the scheduler task to import the product names, it can be found under "Execute console commands". The source XML is updated 4 times a year, according to ICTU.nl. You can also run this task in the console the first time to have some more log info. On a multi site installation, use --page=<uid> to pick the site whose TypoScript holds the settings; that page also determines where the imported records are stored. Without it the lowest site root page is used. See Classes/Command/ImportCommand.php for howto. A log is created at /var/log/productNames-import.log
 * defaultExport behavior to include a page in the catalogi export can be set in typoscript. It's default set on 0, meaning in the page properties a productname must either be filled in or 'export' needs to be set on 'Ja'.
 * Consult the XML Template to see which fields are exported and how.
 * if you want to migrate from alternet_sc_pages, you can check pn_uniform_product_names 1.1.2.
@@ -32,4 +32,4 @@ More info
 =========
 
 * For an introduction on SC, please read Documentation/Extra/IPM-Samenwerkende-Catalogi.pdf. Details and requirements of the catalogi.xml structure, see chapter 3
-* Validate your https://www.yourwebsite.nl/catalogi.xml at the SCValidator https://www.logius.nl/domeinen/interactie/samenwerkende-catalogi/scvalidator
+* Validate your https://www.yourwebsite.nl/catalogi.xml at the SCValidator https://www.logius.nl/onze-dienstverlening/interactie/samenwerkende-catalogi/scvalidator

@@ -3,8 +3,8 @@
 namespace Proudnerds\PnUniformProductNames\Command;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use Proudnerds\PnUniformProductNames\Domain\Model\Uniformeproductnamen;
 use Proudnerds\PnUniformProductNames\Domain\Repository\UniformeproductnamenRepository;
 use Proudnerds\PnUniformProductNames\Utility\Typo3Utility;
@@ -12,9 +12,12 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -39,19 +42,29 @@ class ImportCommand extends Command implements LoggerAwareInterface
      */
     protected $uniformeproductnamenRepository;
 
-    public function __construct(UniformeproductnamenRepository $uniformeproductnamenRepository, \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager)
-    {
+    protected PersistenceManager $persistenceManager;
+
+    public function __construct(
+        UniformeproductnamenRepository $uniformeproductnamenRepository,
+        PersistenceManager $persistenceManager,
+        private readonly SiteFinder $siteFinder
+    ) {
         parent::__construct();
         $this->uniformeproductnamenRepository = $uniformeproductnamenRepository;
         $this->persistenceManager = $persistenceManager;
     }
 
-    protected PersistenceManager $persistenceManager;
-
     protected function configure(): void
     {
         $this->setDescription('Imports UPL productnames.')
-            ->setHelp('This command imports productnames from the Uniforme Productenlijst...');
+            ->setHelp('This command imports productnames from the Uniforme Productenlijst...')
+            ->addOption(
+                'page',
+                'p',
+                InputOption::VALUE_REQUIRED,
+                'Page uid whose TypoScript holds the settings and on which the records are stored. Defaults to the lowest site root page uid.',
+                0
+            );
     }
 
     /**
@@ -74,15 +87,24 @@ class ImportCommand extends Command implements LoggerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $projectRootPath = GeneralUtility::fixWindowsFilePath(getenv('TYPO3_PATH_APP'));
-        $folderName = '/public/typo3temp/pn_uniform_product_names/';
-        $folderDirectory = $projectRootPath . $folderName;
+        $folderDirectory = Environment::getPublicPath() . '/typo3temp/pn_uniform_product_names/';
         if (!@is_dir($folderDirectory)) {
             GeneralUtility::mkdir_deep($folderDirectory);
         }
         $io = new SymfonyStyle($input, $output);
-        $settings = Typo3Utility::getSettings();
-        $url = htmlspecialchars($settings['sourceXmlUrl']);
+
+        $pageId = $this->resolvePageId($input);
+        $io->text(['Reading settings and storing records for page uid ' . $pageId]);
+
+        $settings = Typo3Utility::getSettings('pnuniformproductnames', $pageId);
+        $url = trim((string)($settings['sourceXmlUrl'] ?? ''));
+        if ($url === '') {
+            $logMessage = 'No sourceXmlUrl configured in plugin.tx_pnuniformproductnames.settings. '
+                . 'Use --page=<uid> to point at a page whose TypoScript template includes this extension.';
+            $io->error($logMessage);
+            $this->logger->log(LogLevel::CRITICAL, $logMessage);
+            return Command::FAILURE;
+        }
 
         $date = new \DateTime();
         $productNamesTempImportFilePath = $folderDirectory . 'UPL_import_' . $date->format('H-i-s_d-m-Y') . '.xml';
@@ -98,24 +120,25 @@ class ImportCommand extends Command implements LoggerAwareInterface
             $response = $client->request('GET', $url, [
                 'sink' => $productNamesTempImportFilePath,
                 'headers' => ['Cache-Control' => 'no-cache'],
-                ['allow_redirects' => false],
+                'allow_redirects' => false,
             ]);
-        } catch (RequestException $e) {
+        } catch (BadResponseException $e) {
             $response = $e->getResponse();
             $error = 'URL : ' . $url . PHP_EOL;
             $error .= 'HTTP status code: ' . $response->getStatusCode() . PHP_EOL;
             $error .= 'Response message: ' . $response->getReasonPhrase() . PHP_EOL;
 
-            $body = json_decode((string)$response->getBody());
-            if ($body) {
-                $error .= 'Body: ' . $body . PHP_EOL; // Body as the decoded JSON;
+            $body = trim((string)$response->getBody());
+            if ($body !== '') {
+                $error .= 'Body: ' . mb_substr($body, 0, 2000) . PHP_EOL;
             }
 
             $headers = $response->getHeaders();
-            $headers = implode('&', array_map(function ($a) {return implode('~', $a);}, $headers));
+            $headers = implode('&', array_map(function ($a) {
+                return implode('~', $a);
+            }, $headers));
             $error .= 'Headers: ' . $headers . PHP_EOL;
-            $error .= 'Is the header presented (Content-Type): ' . $response->hasHeader('Content-Type') . PHP_EOL;
-            $error .= 'Concrete header value: ' . $response->getHeader('Content-Type')[0] . PHP_EOL . PHP_EOL;
+            $error .= 'Content-Type: ' . ($response->getHeaderLine('Content-Type') ?: '(none)') . PHP_EOL . PHP_EOL;
 
             $io->text(['', $error]);
             $this->logger->log(LogLevel::CRITICAL, $error);
@@ -131,43 +154,47 @@ class ImportCommand extends Command implements LoggerAwareInterface
 
         $responseCode = $response->getStatusCode();
 
-        $io->text(['Response code: ' . $response->getStatusCode()]);
+        $io->text(['Response code: ' . $responseCode]);
 
-        if ($responseCode === 200) {
-            $io->text(['Succes! File is retrieved and saved at ' . $productNamesTempImportFilePath]);
+        if ($responseCode !== 200) {
+            $logMessage = 'Expected HTTP 200 from ' . $url . ', got ' . $responseCode . ' ' . $response->getReasonPhrase();
+            $io->text(['', $logMessage]);
+            $this->logger->log(LogLevel::CRITICAL, $logMessage);
+            Typo3Utility::flashmessage($logMessage, '', ContextualFeedbackSeverity::ERROR);
+            $this->removeFile($productNamesTempImportFilePath);
+            return Command::FAILURE;
         }
+
+        $io->text(['Succes! File is retrieved and saved at ' . $productNamesTempImportFilePath]);
 
         // Store XML file content in an array
         try {
-            $xml = simplexml_load_string(file_get_contents($productNamesTempImportFilePath));
+            $xml = simplexml_load_string((string)file_get_contents($productNamesTempImportFilePath));
             $json = json_encode($xml);
-            $productNames = json_decode($json, true);
+            $productNames = is_string($json) ? json_decode($json, true) : null;
 
-            $arrayHasContent = false;
-            if ($productNames['results']) {
-                if ($productNames['results']['result']) {
-                    $arrayHasContent = true;
-                }
+            $results = is_array($productNames) ? ($productNames['results']['result'] ?? null) : null;
+            if (is_array($results) && !array_is_list($results)) {
+                $results = [$results];
             }
 
-            if (!$arrayHasContent) {
+            if (!is_array($results) || $results === []) {
                 $logMessage = 'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath;
                 $io->text(['', $logMessage]);
                 $this->logger->log(LogLevel::CRITICAL, $logMessage);
                 Typo3Utility::flashmessage($logMessage, '', ContextualFeedbackSeverity::ERROR);
+                $this->removeFile($productNamesTempImportFilePath);
                 return Command::FAILURE;
             }
-        } catch (
-            \Exception $e
-        ) {
-            $response = $e->getMessage();
-            $logMessage = $response;
+        } catch (\Exception $e) {
+            $logMessage = $e->getMessage();
             $io->text([
                 '',
                 'Something went wrong when reading the XML file ' . $productNamesTempImportFilePath . ': ' . $logMessage,
             ]);
             $this->logger->log(LogLevel::CRITICAL, $logMessage);
             Typo3Utility::flashmessage($logMessage, '', ContextualFeedbackSeverity::ERROR);
+            $this->removeFile($productNamesTempImportFilePath);
             return Command::FAILURE;
         }
 
@@ -175,41 +202,40 @@ class ImportCommand extends Command implements LoggerAwareInterface
         $numberOfProductNames = 0;
         $numberOfNewProductNames = 0;
 
-        foreach ($productNames['results']['result'] as $result) {
-            // Look at the debug info of the array in TYPO3 backend Scheduler task to see the structure
-            //Debug($result);
+        $knownTitles = [];
+        foreach ($this->uniformeproductnamenRepository->findAll() as $storedProductName) {
+            $knownTitles[$storedProductName->getTitle()] = true;
+        }
 
+        foreach ($results as $result) {
             $numberOfProductNames++;
             $productName = new Uniformeproductnamen();
             $validProductName = false;
 
-            foreach ($result['binding'] as $binding) {
-                if ($binding['@attributes']['name'] === 'UniformeProductnaam') {
-                    if ($binding['literal']) {
-                        $productName->setTitle($binding['literal']);
-                        $validProductName = true;
-                    }
+            foreach (($result['binding'] ?? []) as $binding) {
+                $bindingName = $binding['@attributes']['name'] ?? '';
+
+                if ($bindingName === 'UniformeProductnaam' && !empty($binding['literal'])) {
+                    $productName->setTitle($binding['literal']);
+                    $validProductName = true;
                 }
 
-                if ($binding['@attributes']['name'] === 'URI') {
-                    if ($binding['uri']) {
-                        $productName->setUri($binding['uri']);
-                    }
+                if ($bindingName === 'URI' && !empty($binding['uri'])) {
+                    $productName->setUri($binding['uri']);
                 }
             }
 
-            if ($validProductName) {
-                // A productname could be multiple times in the XML, for example with different Grondslaglabels
-                // These are however not used, so we keep only 1 version of the productname
-                // Also dont insert already stored productnames
-                // @phpstan-ignore-next-line
-                if (Typo3Utility::emptyObj($this->uniformeproductnamenRepository->findByTitle($productName->getTitle()))) {
-                    $this->uniformeproductnamenRepository->add($productName);
-                    $this->persistenceManager->persistAll();
-                    $numberOfNewProductNames++;
-                }
+            // A productname occurs multiple times in the feed, once per Grondslaglabel. Those labels
+            // are not used here, so only the first occurrence is stored.
+            if ($validProductName && !isset($knownTitles[$productName->getTitle()])) {
+                $this->uniformeproductnamenRepository->add($productName);
+                $knownTitles[$productName->getTitle()] = true;
+                $numberOfNewProductNames++;
             }
         }
+
+        $this->persistenceManager->persistAll();
+        $this->removeFile($productNamesTempImportFilePath);
 
         $logMessage = 'Import of uniform product names finished. ' . $numberOfProductNames . ' items have been processed, ' . $numberOfNewProductNames . ' new productnames are added to the database in tx_pnuniformproductnames_domain_model_uniformeproductnamen';
         $io->text(['', $logMessage]);
@@ -217,5 +243,27 @@ class ImportCommand extends Command implements LoggerAwareInterface
         Typo3Utility::flashmessage($logMessage);
 
         return Command::SUCCESS;
+    }
+
+    private function resolvePageId(InputInterface $input): int
+    {
+        $pageId = (int)$input->getOption('page');
+        if ($pageId > 0) {
+            return $pageId;
+        }
+
+        $rootPageIds = array_map(
+            static fn($site) => $site->getRootPageId(),
+            array_values($this->siteFinder->getAllSites())
+        );
+
+        return $rootPageIds === [] ? 0 : min($rootPageIds);
+    }
+
+    private function removeFile(string $filePath): void
+    {
+        if (is_file($filePath)) {
+            @unlink($filePath);
+        }
     }
 }
